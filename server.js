@@ -8,6 +8,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const authRouter = require('./route/auth-route.js');
+const breweryRouter = require('./route/brewery-route.js');
+const beerRouter = require('./route/beer-route.js');
 const errors = require('./lib/error-middleware.js');
 
 dotenv.load();
@@ -20,8 +22,10 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.use(authRouter);
+app.use(breweryRouter);
+app.use(beerRouter);
 app.use(errors);
 
 app.listen(PORT, () => {
-  debug(`listening on ${PORT}`);
+  debug(`server on ${PORT}`);
 });
