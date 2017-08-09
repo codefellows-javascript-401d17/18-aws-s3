@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const debug = require('debug')('brewery:brewerySchema');
 const createError = require('http-errors');
-const Beer = require('beer');
+const Beer = require('./beer.js');
 const Schema = mongoose.Schema;
 
 const brewerySchema = Schema({
