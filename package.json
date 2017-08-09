@@ -1,0 +1,42 @@
+{
+  "name": "18-aws-s3",
+  "version": "1.0.0",
+  "description": "![CF](https://camo.githubusercontent.com/70edab54bba80edb7493cad3135e9606781cbb6b/687474703a2f2f692e696d6775722e636f6d2f377635415363382e706e67) 18: Image Uploads w/ AWS S3 ===",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "DEBUG='brewery*' mocha",
+    "start": "DEBUG='brewery*' node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jamesbillard12/18-aws-s3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jamesbillard12/18-aws-s3/issues"
+  },
+  "homepage": "https://github.com/Jamesbillard12/18-aws-s3#readme",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "bluebird": "^3.5.0",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
+    "debug": "^3.0.0",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.4",
+    "http-errors": "^1.6.2",
+    "jsonwebtoken": "^7.4.2",
+    "mongoose": "^4.11.6",
+    "morgan": "^1.8.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0",
+    "superagent": "^3.5.2"
+  }
+}
