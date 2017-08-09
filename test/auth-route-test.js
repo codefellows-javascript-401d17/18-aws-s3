@@ -18,17 +18,19 @@ describe('Auth Routes', function() {
   describe('POST: /api/signup', function() {
     describe('with a valid body', function() {
       after( done => {
+        console.log('HELLO!!!!!');
         User.remove({})
+        .then(() => {
+        })
         .then( () => done())
         .catch(done);
       });
 
-      it('should return a token 200', done => {
+      it('should return a token', done => {
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err, res) => {
           if (err) return done(err);
-          console.log('POST: /api/signup TOKEN:', res.text, '\n');
           expect(res.status).to.equal(200);
           expect(res.text).to.be.a('string');
           done();
@@ -77,8 +79,6 @@ describe('Auth Routes', function() {
         request.get(`${url}/api/signin`)
         .auth('exampleuser', '1234')
         .end((err, res) => {
-          console.log('signed in user:', this.tempUser);
-          console.log('GET: /api/signin TOKEN:', res.text);
           expect(res.status).to.equal(200);
           done();
         });
@@ -98,6 +98,8 @@ describe('Auth Routes', function() {
       });
     });
   });
+
+  // Problem area
   describe('cannot be authenticated', function() {
     beforeEach( done => {
       let user = new User(exampleUser);

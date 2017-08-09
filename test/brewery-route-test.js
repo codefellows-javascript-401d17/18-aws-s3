@@ -48,24 +48,23 @@ describe('Brewery Routes', function() {
   });
 
   describe('POST: /api/brewery', function() {
-    beforeEach( done => {
-      new User(exampleUser)
-      .generatePasswordHash(exampleUser.password)
-      .then( user => {
-        return user.save();
-      })
-      .then( user => {
-        this.tempUser = user;
-        return user.generateToken();
-      })
-      .then( token => {
-        this.tempToken = token;
-        done();
-      })
-      .catch(done);
-    });
-
     describe('POST with a valid req body',() => {
+      before( done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => {
+          return user.save();
+        })
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
       it('should return a brewery 200', done => {
         request.post(`${url}/api/brewery`)
         .send(exampleBrewery)
@@ -83,6 +82,22 @@ describe('Brewery Routes', function() {
       });
     });
     describe('POST with an invalid request', () => {
+      before( done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => {
+          return user.save();
+        })
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
       it('should return 400', done => {
         request.post(`${url}/api/brewery`)
         .send()
@@ -96,6 +111,22 @@ describe('Brewery Routes', function() {
       });
     });
     describe('POST without a token 401', () => {
+      before( done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => {
+          return user.save();
+        })
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
       it('should return 401', done => {
         request.post(`${url}/api/brewery`)
         .send()
@@ -108,7 +139,7 @@ describe('Brewery Routes', function() {
   });
 
   describe('GET: /api/brewery/:id', () => {
-    beforeEach( done => {
+    before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
       .then( user => {
@@ -124,15 +155,12 @@ describe('Brewery Routes', function() {
       })
       .catch(done);
     });
-    beforeEach( done => {
+
+    before( done => {
       exampleBrewery.userID = this.tempUser._id.toString();
       new Brewery(exampleBrewery).save()
       .then( brewery => {
         this.tempBrewery = brewery;
-        return Brewery.findByIdAndAddBeer(brewery._id, exampleBeer);
-      })
-      .then( beer => {
-        this.tempBeer = beer;
         done();
       })
       .catch(done);
@@ -149,10 +177,6 @@ describe('Brewery Routes', function() {
         expect(res.body.name).to.equal('the brewery name');
         expect(res.body.address).to.equal('the address');
         expect(res.body.phoneNumber).to.equal('555-555-5555');
-        expect(res.body.beers.length).to.equal(1);
-        expect(res.body.beers[0].name).to.equal('test beer');
-        expect(res.body.beers[0].style).to.equal('test style');
-        expect(res.body.beers[0].ibu).to.equal('45');
         done();
       });
     });
@@ -178,8 +202,25 @@ describe('Brewery Routes', function() {
       });
 
       describe('testing PUT /api/brewery/:id', () => {
-        before( done => {
-          exampleBrewery.timestamp = new Date();
+        beforeEach( done => {
+          new User(exampleUser)
+          .generatePasswordHash(exampleUser.password)
+          .then( user => {
+            return user.save();
+          })
+          .then( user => {
+            this.tempUser = user;
+            return user.generateToken();
+          })
+          .then( token => {
+            this.tempToken = token;
+            done();
+          })
+          .catch(done);
+        });
+
+        beforeEach( done => {
+          exampleBrewery.userID = this.tempUser._id.toString();
           new Brewery(exampleBrewery).save()
           .then( brewery => {
             this.tempBrewery = brewery;
@@ -241,7 +282,7 @@ describe('Brewery Routes', function() {
 });
 
 describe('DELETE: /api/brewery/:id', () => {
-  beforeEach( done => {
+  before( done => {
     new User(exampleUser)
     .generatePasswordHash(exampleUser.password)
     .then( user => {
@@ -257,17 +298,22 @@ describe('DELETE: /api/brewery/:id', () => {
     })
     .catch(done);
   });
-  beforeEach( done => {
+
+  before( done => {
     exampleBrewery.userID = this.tempUser._id.toString();
     new Brewery(exampleBrewery).save()
     .then( brewery => {
       this.tempBrewery = brewery;
-      return Brewery.findByIdAndAddBeer(brewery._id, exampleBeer);
-    })
-    .then( beer => {
-      this.tempBeer = beer;
       done();
     })
+    .catch(done);
+  });
+
+  after( done => {
+    Promise.all([
+      User.remove({}),
+    ])
+    .then( () => done())
     .catch(done);
   });
 

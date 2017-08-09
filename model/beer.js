@@ -7,7 +7,7 @@ const beerSchema = Schema ({
   name: {type: String, required: true},
   style: {type: String, require: true},
   ibu: {type: String, required: true},
-  userID: {type: Schema.types.ObjectId, require: true},
+  userID: {type: Schema.Types.ObjectId, require: true},
   breweryID: {type: Schema.Types.ObjectId, required: true },
   imageURI: {type: String, required: true, unique: true},
   objectKey: {type: String, required: true, unique: true},
