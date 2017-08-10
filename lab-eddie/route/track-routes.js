@@ -28,7 +28,7 @@ function s3Prom(params) {
   });
 }
 
-trackRouter.post('/api/album/:albimID/track', bearerAuth, pload.single('track'), function(req, res, next) {
+trackRouter.post('/api/album/:albumID/track', bearerAuth, upload.single('track'), function(req, res, next) {
   debug('POST: /api/album/albumID/track');
 
   if (!req.file) return next(createError(400, 'no file found'));
@@ -42,7 +42,23 @@ trackRouter.post('/api/album/:albimID/track', bearerAuth, pload.single('track'),
     Key: `${req.file.filename}${ext}`,
     Body: fs.createReadStream(req.file.path)
   };
-  
+
+  Album.findById(req.params.albumID)
+  .then(() => s3Prom(params))
+  .then(s3data => {
+    del([`${dataDir}/*`]);
+    let trackBody = {
+      title: req.body.title,
+      objectKey: s3data.Key,
+      trackURI: s3data.Location,
+      userID: req.user._id,
+      albumID: req.params.galleryID
+    }
+
+    return new Track(trackBody).save();
+  })
+  .then(track => res.json(track))
+  .catch(err => next(createError(400, err.message)));
 });
 
 

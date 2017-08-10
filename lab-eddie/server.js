@@ -10,6 +10,7 @@ const debug = require('debug')('app:server.js');
 const app = express();
 const userRoutes = require('./route/user-routes.js');
 const albumRoutes = require('./route/album-routes.js');
+const trackRoutes = require('./route/track-routes.js');
 const errors = require('./lib/error.js');
 const PORT = process.env.PORT || 3000;
 
@@ -20,6 +21,7 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(userRoutes);
 app.use(albumRoutes);
+app.use(trackRoutes);
 app.use(errors);
 
 app.listen(PORT, () => {
