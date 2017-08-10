@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const authRouter = require('./route/auth-route.js');
+const galleryRouter = require('./route/gallery-router.js');
 const pokemonRouter = require('./route/pokemon-route.js');
 const errors = require('./lib/error-middleware.js');
 
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.use(authRouter);
+app.use(galleryRouter);
 app.use(pokemonRouter);
 app.use(errors);
 
