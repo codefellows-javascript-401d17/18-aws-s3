@@ -67,10 +67,49 @@ eulaRouter.post(`/api/cabinet/:cabinetID/eula`, bearerAuthorization, upload.sing
       }
       return Eula.create(eulaData);
     })
-    .then((pic) => {
-      return rsp.json(pic)
+    .then((eula) => {
+      return rsp.json(eula)
     })
     .catch((err) => {
       next(err);
     })
 })
+
+
+
+eulaRouter.delete(`/api/cabinet/:cabinetID/eula/:eulaKey`, bearerAuthorization, function (req, rsp, done) {
+
+  var params = {
+    Bucket: process.env.AWS_BUCKET,
+    Delete: {
+      Objects: [
+        {
+          Key: `${req.params.eulaKey}`
+        }
+      ],
+    },
+  };
+
+  function s3deleteProm(params) {
+    return new Promise((resolve, reject) => {
+      s3.deleteObjects(params, (err, s3data) => {
+        resolve(s3data);
+      })
+    })
+  }
+
+  Cabinet.findById(req.params.cabinetID)
+    .then(() => {
+      return s3deleteProm(params)
+    })
+    .then(() => {
+      Eula.findByIdAndRemove(`${req.params.eulaKey}`)
+    })
+    .then(() => {
+      rsp.send(204);
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    })
+});
