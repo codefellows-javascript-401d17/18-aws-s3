@@ -89,6 +89,15 @@ describe('pic routes', function(){
           done();
         });
       });
+
+      it('should return a 401', done => {
+        request.post(`${url}/api/gallery/${this.tempGallery._id}/pic`)
+        .send(examplePic)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
     });
   });
 });
