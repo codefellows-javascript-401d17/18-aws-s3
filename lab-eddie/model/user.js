@@ -45,5 +45,6 @@ userSchema.methods.compareHash = function(password) {
 userSchema.methods.generateToken = function() {
   debug('generateToken');
 
+    
 
 };
