@@ -66,11 +66,9 @@ trackRouter.post('/api/album/:albumID/track', bearerAuth, upload.single('track')
     return trackBody;
   })
   .then(body => {
-    console.log(body);
-    return new Track(trackBody)
+    return new Track(body)
   })
   .then(track => {
-    console.log(track)
     res.json(track);
     next();
   })

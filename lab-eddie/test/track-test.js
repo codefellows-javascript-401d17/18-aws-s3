@@ -81,10 +81,7 @@ describe('track Routes', function() {
         .end((err, res) => {
           if (err) return done(err);
           expect(res.status).to.equal(200);
-          // expect(res.body.name).to.equal(examplePic.name);
-          // expect(res.body.desc).to.equal(examplePic.desc);
-          // expect(res.body.galleryID).to.equal(this.tempGallery._id.toString());
-          console.log(req.body)
+          console.log(res.body)
           done();
         });
       });
