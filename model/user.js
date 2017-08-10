@@ -19,7 +19,7 @@ const userSchema = Schema({
 
 userSchema.methods.generatePasswordHash = function(password) {
   debug('generatePasswordHash');
-  
+
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, 10, (err, hash) => {
       if (err) return reject(err);
@@ -42,7 +42,7 @@ userSchema.methods.comparePasswordHash = function(password) {
 
 userSchema.methods.generateFindHash = function() {
   debug('generateFindHash');
-  
+
   return new Promise((resolve, reject) => {
     let tries = 0;
 
@@ -63,7 +63,7 @@ userSchema.methods.generateFindHash = function() {
 
 userSchema.methods.generateToken = function() {
   debug('generateToken');
-  
+
   return new Promise((resolve, reject) => {
     this.generateFindHash()
     .then( findHash => resolve(jwt.sign({ token: findHash }, process.env.APP_SECRET)))

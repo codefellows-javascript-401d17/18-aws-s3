@@ -17,22 +17,22 @@ AWS.config.setPromisesDependency(require('bluebird'));
 
 const s3 = new AWS.S3();
 const dataDir = `${__dirname}/../data`;
-const upload = multer({ dest: dataDir});
+const upload = multer({ dest: dataDir });
 
 const picRouter = module.exports = Router();
 
 function s3uploadProm(params) {
   return new Promise((resolve, reject) => {
-    s3.upload(params, (err, s3data) =>{
+    s3.upload(params, (err, s3data) => {
       resolve(s3data);
     });
   });
 }
 
-picRouter.post('/api/gallery:galleryID/pic', bearerAuth, upload.single('imgage'),function (req, res, next){
+picRouter.post('/api/gallery/:galleryID/pic', bearerAuth, upload.single('image'), function(req, res, next) {
   debug('POST: /api/gallery/:galleryID/pic');
 
-  if(!req.file) {
+  if (!req.file) {
     return next(createError(400, 'file not found'));
   }
 
@@ -46,24 +46,24 @@ picRouter.post('/api/gallery:galleryID/pic', bearerAuth, upload.single('imgage')
     ACL: 'public-read',
     Bucket: process.env.AWS_BUCKET,
     Key: `${req.file.filename}${ext}`,
-    Body: fs.createReadStream(req.file.path);
+    Body: fs.createReadStream(req.file.path)
   }
-  //
+
   Gallery.findById(req.params.galleryID)
   .then( () => s3uploadProm(params))
   .then( s3data => {
     console.log('s3data:', s3data);
     del([`${dataDir}/*`]);
     let picData = {
-      name: req.body.name.
+      name: req.body.name,
       desc: req.body.desc,
       objectKey: s3data.Key,
       imageURI: s3data.Location,
       userID: req.user._id,
       galleryID: req.params.galleryID
-    };
+    }
     return new Pic(picData).save();
   })
-  .then (pic => res.json(pic))
-  .catch(err => next(err));
+  .then( pic => res.json(pic))
+  .catch( err => next(err));
 });
