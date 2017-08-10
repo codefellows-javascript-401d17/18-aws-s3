@@ -1,4 +1,4 @@
-![CF](https://camo.githubusercontent.com/70edab54bba80edb7493cad3135e9606781cbb6b/687474703a2f2f692e696d6775722e636f6d2f377635415363382e706e67) 18: Image Uploads w/ AWS S3
+![CF](https://camo.githubusercontent.com/70edab54bba80edb7493cad3135e9606781cbb6b/687474703a2f2f692e696d6775722e636f6d2f377635415363382e706e67) 16: Basic Auth
 ===
 
 ## Submission Instructions
@@ -10,46 +10,54 @@
   * write a question and observation on canvas
 
 ## Learning Objectives  
-* students will be able to upload static assets to AWS S3
-* students will be able to retrieve a cdn url that contains the previously uploaded static asset
-* students will be able to work with secret and public access keys
+* students will be able to create basic authorization middleware
+* students will be able to test basic authorization for signup/signin routes
 
 ## Requirements
 #### Configuration
 * `package.json`
 * `.eslintrc`
 * `.gitignore`
+* `.env`
 * `README.md`
 
-#### Description
-* create an AWS account
-* create an AWS Access Key and Secret
-  * add the Access Key and Secret to your `.env` file
-* create a new model that represents a file type that you want to store on AWS S3
-  * ex: `.mp3`, `.mp4`, `.png`, etc
-* create a test that uploads one of these files to your route
-* use the `aws-sdk` to assist with uploading
-* use `multer` to parse the file upload request
+## Feature Tasks
+* create the following directories to organize your code:
+  * **lib**
+  * **model**
+  * **route**
+  * **test**
+* create an HTTP server using `express`
+* using `mongoose`, create a **User** model with the following properties and options:
+  * `username` - *required and unique*
+  * `email` - *required and unique*
+  * `password` - *required - this must be hashed and can not stored as plain text*
+  * `findHash` - *unique*
+* use the **npm** `debug` module to log function calls that are used within your application
+* use the **express** `Router` to create a custom router for allowing users to **sign up** and **sign in**
+* use the **npm** `dotenv` module to house the following environment variables:
+  * `PORT`
+  * `MONGODB_URI`
+  * `APP_SECRET` *(used for signing and verify tokens)*
 
-#### Server Endpoint
-* `POST` - `/api/resource/:resourceID/new-resource`
+## Server Endpoints
+### `/api/signup`
+* `POST` request
+* the client should pass the username and password in the body of the request
+* the server should respond with a token (generated using `jwt` and `findHash`
+* the server should respond with **400 Bad Request** to a failed request
 
-#### Tests
-* `POST` - **200** - test that the upload worked and a resource object is returned
+### `/api/signin`
+* `GET` request
+* the client should pass the username and password to the server using a `Basic:` authorization header
+* the server should respond with a token for authenticated users
+* the server should respond with **401 Unauthorized** for non-authenticated users
 
-#### Bonus
-* `DELETE` route - `/api/resource/:resourceID/new-resource/:new-resourceID`
-* Test: `DELETE` - **204** - test to ensure the object was deleted from s3
-
-#### Bonus: 3pts
-* try using the `deleteObject` method provided by the `aws-sdk` to delete an object *(file)* from S3
-  * you will need to pass in a `params` object that contains the associated Bucket and AWS object key in order to delete the object from s3
-  * ex:
-  ``` javascript
-  var params = {
-    Bucket: 's3-bucket-name',
-    Key: 'object-filename'
-  }
-  s3.deleteObject(params)
-  ```
-* don't forget to remove the resource from the DB
+## Tests
+* create a test that will ensure that your API returns a status code of **404** for any routes that have not been registered
+* `/api/signup`
+* `POST` - test **400**, if no request body has been provided or the body is invalid
+* `POST` - test **200**, if the request body has been provided and is valid
+* `/api/signin`
+* `GET` - test **401**, if the user could not be authenticated
+* `GET` - test **200**, responds with token for a request with a valid basic authorization header
