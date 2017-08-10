@@ -9,7 +9,7 @@ const basicAuth = require('../lib/basic-auth.js');
 const userRouter = new Router();
 const User = require('../model/user.js');
 
-basicAuth.post('api/newuser', jsonParser, (req, res) => {
+userRouter.post('api/newuser', jsonParser, (req, res) => {
   debug('POST: api/newuser');
 
   let passWord = req.body.passWord;
@@ -34,4 +34,4 @@ userRouter.get('/api/signin',basicAuth , function(req, res, next) {
   .catch(next);
 });
 
-module.exports = authRoute;
+module.exports = userRouter;
