@@ -44,7 +44,7 @@ beerRouter.post('/api/brewery/:breweryID/beer', bearerAuth, upload.single('image
 
   let params = {
     ACL: 'public-read',
-    Bucket: process.end.AWS_BUCKET,
+    Bucket: process.env.AWS_BUCKET,
     Key: `${req.file.filename}${ext}`,
     Body: fs.createReadStream(req.file.path),
   };
