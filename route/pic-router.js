@@ -42,7 +42,9 @@ picRouter.post('/api/comment/:commentID/pic', bearerAuth, upload.single('image')
   }
 
   let ext = path.extname(req.file.originalname);
-
+  console.log('1', req);
+  console.log('2', req.file);
+  console.log(req.file.originalname);
   let params = {
     ACL: 'public-read',
     Bucket: process.env.AWS_BUCKET,

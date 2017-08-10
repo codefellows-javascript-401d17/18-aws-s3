@@ -88,7 +88,7 @@ describe('Pic Routes', function() {
             expect(res.body.commentID).to.equal(this.tempComment._id.toString());
             done();
           })
-          .catch(done console.log('whoops'));
+          .catch(done());
       });
     });
   });
