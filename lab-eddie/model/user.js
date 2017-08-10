@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const createError = require('http-errors');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new Schema({
   userName: {type: String, required: true, unique: true},
@@ -44,7 +45,32 @@ userSchema.methods.compareHash = function(password) {
 
 userSchema.methods.generateToken = function() {
   debug('generateToken');
+  
+  return new Promise((resolve, reject) => {
+    let tries = 0;
 
-    
+    _generateToken,call(this);
 
+    function _generateToken() {
+      this.hash = crypto.randomBytes(32).toString('hex');
+      this.save()
+      .then(() => resolve(this.hash))
+      .catch(err => {
+        if(tries >2) return reject(err);
+        tries++;
+        _generateToken().call(this);
+      })
+    }
+  })
 };
+
+userSchema.methods.signToken= function() {
+  debug('Sign Token');
+
+  return new Promise((resolve, reject) => {
+
+    this.generateToken()
+    .then(hash => resolve(jwt.sign({token:hash}, process.env.APP_SECRET)))
+    .catch(err => reject(err));
+  });
+}
