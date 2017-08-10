@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "DEBUG='app*' mocha",
+    "test": "DEBUG='app*' mocha --timeout 0",
     "start": "DEBUG='app*' node server.js"
   },
   "keywords": [],

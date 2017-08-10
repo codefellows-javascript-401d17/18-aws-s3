@@ -16,13 +16,20 @@ const bearerAuth = require('../lib/bearer-auth.js');
 const trackRouter = module.exports = new Router();
 
 AWS.config.setPromisesDependency(require('bluebird'));
+// AWS.config.update({
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     secretAccessKey: "YOURSECRET"
+// });
 const s3 = new AWS.S3();
 const dataDir = `${__dirname}/../data`;
 const upload = multer({ dest: dataDir });
 
+
 function s3Prom(params) {
   return new Promise((resolve, reject) => {
+    console.log('processing')
     s3.upload(params, (err, s3data) => {
+      if(err) console.log(err);
       resolve(s3data);
     });
   });
@@ -42,22 +49,31 @@ trackRouter.post('/api/album/:albumID/track', bearerAuth, upload.single('track')
     Key: `${req.file.filename}${ext}`,
     Body: fs.createReadStream(req.file.path)
   };
-
+  
   Album.findById(req.params.albumID)
   .then(() => s3Prom(params))
   .then(s3data => {
+    console.log('Why wont this work!!!!!!!')
+    console.log(req.user)
     del([`${dataDir}/*`]);
-    let trackBody = {
+    var trackBody = {
       title: req.body.title,
-      objectKey: s3data.Key,
-      trackURI: s3data.Location,
+      awsKey: s3data.Key,
+      awsURI: s3data.Location,
       userID: req.user._id,
-      albumID: req.params.galleryID
+      albumID: req.params.albumID,
     }
-
-    return new Track(trackBody).save();
+    return trackBody;
   })
-  .then(track => res.json(track))
+  .then(body => {
+    console.log(body);
+    return new Track(trackBody)
+  })
+  .then(track => {
+    console.log(track)
+    res.json(track);
+    next();
+  })
   .catch(err => next(createError(400, err.message)));
 });
 

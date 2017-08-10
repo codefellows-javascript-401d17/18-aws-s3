@@ -1,76 +1,79 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const debug = require('debug')('app: user.js');
-const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
+const creatError = require('http-errors');
+const debug = require('debug')('app: user');
 const crypto = require('crypto');
-const createError = require('http-errors');
+const Promise = require('bluebird');
 const jwt = require('jsonwebtoken');
 
-const userSchema = new Schema({
+const Schema = mongoose.Schema;
+
+const User = Schema({
   userName: {type: String, required: true, unique: true},
   email: {type: String, required: true, unique: true},
   passWord: {type: String, required: true},
-  hash: {type: String, unique: true}
+  findHash: {type: String, unique: true}
 });
 
-module.exports = mongoose.model('user', userSchema);
-
-userSchema.methods.hashPass = function(passWord) {
-  debug('hashPass');
+User.methods.hashPass = function(password) {
+  debug('generatePasswordHash');
+  console.log(password)
 
   return new Promise((resolve, reject) => {
-    bcrypt.hash(password, 5, (err, has) => {
+    bcrypt.hash(password, 5, (err, hash) => {
       if(err) return reject(err);
-      this.password = hash;
-      this.save();
+      this.passWord = hash;
       resolve(this);
     })
   })
-};
-
-userSchema.methods.compareHash = function(password) {
-  debug('compareHash');
-
-  return new Promise((resolve, reject) => {
-
-    bcrypt.compare(password, this.password, (err, valid) => {
-      if(err) return reject(err);
-      if(!valid) return reject(createError(401, 'Invalid password'));
-      resolve(this)
-    });
-  });
 }
 
-userSchema.methods.generateToken = function() {
-  debug('generateToken');
-  
+User.methods.confirmPass = function(password) {
+  debug('comparePass');
+
+
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, this.passWord, (err, valid) => {
+      if(err) return reject(err);
+      if(!valid) return reject(creatError(401, 'Invalid Password!'));
+      resolve(this);
+    });
+  });
+};
+
+User.methods.tokenGen = function() {
+  debug('tokenGen');
+
   return new Promise((resolve, reject) => {
     let tries = 0;
 
-    _generateToken,call(this);
+    _generateHash.call(this);
 
-    function _generateToken() {
-      this.hash = crypto.randomBytes(32).toString('hex');
+    function _generateHash() {
+      this.findHash = crypto.randomBytes(32).toString('hex');
       this.save()
-      .then(() => resolve(this.hash))
+      .then(() => resolve(this.findHash))
       .catch(err => {
         if(tries >2) return reject(err);
         tries++;
-        _generateToken().call(this);
-      })
+        _generateHash.call(this);
+      });
     }
-  })
+  });
 };
 
-userSchema.methods.signToken= function() {
-  debug('Sign Token');
+User.methods.signToken = function() {
+  debug('signToken');
 
   return new Promise((resolve, reject) => {
-
-    this.generateToken()
-    .then(hash => resolve(jwt.sign({token:hash}, process.env.APP_SECRET)))
+    this.tokenGen()
+    .then(hash => {
+      return resolve(jwt.sign({token: hash}, process.env.APP_SECRET))
+    })
     .catch(err => reject(err));
   });
-}
+};
+
+module.exports = mongoose.model('user', User);
