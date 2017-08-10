@@ -9,6 +9,7 @@ const cors = require('cors');
 
 const authRouter = require('./route/auth-router.js');
 const regionRouter = require('./route/region-router.js');
+const imageRouter = require('./route/image-router.js');
 const errors = require('./lib/error-middleware.js');
 
 dotenv.load();
@@ -22,6 +23,7 @@ app.use(morgan('dev'));
 
 app.use(authRouter);
 app.use(regionRouter);
+app.use(imageRouter);
 app.use(errors);
 
 app.listen(PORT, () => {
