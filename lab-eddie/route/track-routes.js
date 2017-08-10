@@ -53,8 +53,7 @@ trackRouter.post('/api/album/:albumID/track', bearerAuth, upload.single('track')
   Album.findById(req.params.albumID)
   .then(() => s3Prom(params))
   .then(s3data => {
-    console.log('Why wont this work!!!!!!!')
-    console.log(req.user)
+
     del([`${dataDir}/*`]);
     var trackBody = {
       title: req.body.title,

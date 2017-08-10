@@ -11,7 +11,7 @@ const Album = require('../model/album.js');
 require('../server.js');
 
 const url = `http://localhost:${process.env.PORT}`
-User.remove({})
+
 const testUser = {
   userName: 'Lucifer',
   passWord: '666666',
@@ -81,6 +81,8 @@ describe('track Routes', function() {
         .end((err, res) => {
           if (err) return done(err);
           expect(res.status).to.equal(200);
+          expect(res.body.title).to.equal(testTrack.title)
+          expect(res.body.albumID).to.equal(this.album._id.toString())
           console.log(res.body)
           done();
         });
