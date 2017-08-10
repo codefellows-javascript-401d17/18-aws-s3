@@ -68,3 +68,24 @@ beerRouter.post('/api/brewery/:breweryID/beer', bearerAuth, upload.single('image
   .then( beer =>res.json(beer))
   .catch( err => next(err));
 });
+
+beerRouter.delete('/api/brewery/:breweryID/beer/:beerID', bearerAuth, function(req, res, next){
+  debug('DELETE: /api/brewery/:id');
+
+
+  Beer.findById(req.params.beerID)
+  .then( beer => {
+    let params = {
+      Bucket: process.env.AWS_BUCKET,
+      Key: beer.objectKey
+    };
+    s3.deleteObject(params, function(err, data) {
+      if(err)console.log(err);
+      else console.log(data);
+      Beer.findByIdAndRemove(req.params.id)
+      .then( () => res.status(204).send())
+      .catch(next);
+    });
+  })
+  .catch(next);
+});
