@@ -6,7 +6,7 @@ const path = require('path');
 const del = require('del');
 const AWS = require('aws-sdk');
 const multer = require('multer');
-const createError = require('https-errors');
+const createError = require('http-errors');
 const debug = require('debug')('eula:eula_router.js');
 
 const Eula = require('../model/eula.js');
@@ -23,7 +23,7 @@ const dataDir = `${__dirname}/../data`;
 //multer is middleware
 const upload = multer({ dest: dataDir })
 
-eulaRouter.post(`/api/cabinet/:cabinetID/eula`, bearerAuthorization, upload.single('pdf'), function (req, rsp, next) {
+eulaRouter.post(`/api/cabinet/:cabinetID/eula`, bearerAuthorization, upload.single('image'), function (req, rsp, next) {
   debug('POST: /api/cabinet/:cabinetID/eula');
 
   if (!req.file) {
@@ -37,9 +37,9 @@ eulaRouter.post(`/api/cabinet/:cabinetID/eula`, bearerAuthorization, upload.sing
 
   let params = {
     ACL: 'public-read',
-    Body: fs.createReadStream(req.file.path)
+    Body: fs.createReadStream(req.file.path),
     Bucket: process.env.AWS_BUCKET,
-    Key: `${req.file.filename$}${ext}`,
+    Key: `${req.file.filename}${ext}`,
   }
 
   function s3uploadProm(params) {

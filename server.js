@@ -7,6 +7,7 @@ const debug = require('debug')('eula:server.js');
 const errors = require('./lib/error-middleware.js');
 const authRouter = require('./route/auth-router.js');
 const cabinetRouter = require('./route/cabinet-router.js');
+const eulaRouter = require('./route/eula_router.js');
 const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
@@ -20,6 +21,7 @@ app.use(morgan('dev'));
 
 app.use(cabinetRouter);
 app.use(authRouter);
+app.use(eulaRouter);
 app.use(errors);
 
 app.listen(PORT, function () {

@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const eulaSchema = Schema({
-  name: { type: String, required: true }
+  name: { type: String, required: true },
   content: { type: String, required: true },
-  UserID: { type: Schema.Types.ObjectId, required: true },
+  UserID: { type: Schema.Types.ObjectId },
   cabinetID: { type: Schema.Types.ObjectId, required: true },
-  pdf_URI: { type: String, required: true, unique: true },
+  pdf_URI: { type: String, unique: true },
   objectKey: { type: String, required: true, unique: true },
   created: { type: Date, default: Date.now }
 })

@@ -42,6 +42,6 @@ authRouter.get('/api/signin', basicAuth, function (req, rsp, next) {
     });
 });
 
-authRouter.all('*', function (req, rsp, next) {
-  next(createError(404, 'not found'));
-})
+// authRouter.all('*', function (req, rsp, next) {
+//   next(createError(404, 'not found'));
+// })
