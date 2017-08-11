@@ -92,7 +92,6 @@ describe('beer routes', function() {
         .attach('image', exampleBeer.image)
         .end((err, res) => {
           if(err) return done(err);
-          console.log(res.body);
           expect(res.status).to.equal(200);
           expect(res.body.name).to.equal(exampleBeer.name);
           expect(res.body.style).to.equal(exampleBeer.style);
@@ -157,11 +156,9 @@ describe('DELETE: /api/brewery/:breweryID/beer/:beerID', function() {
       .attach('image', exampleBeer0.image)
       .then((res) => {
         this.tempBeer = res.body;
-        console.log('************', this.tempBeer);
         return this.tempBeer;
       }, done)
       .then((beer) => {
-        console.log('************', beer);
         request.delete(`${url}/api/brewery/${this.tempBrewery._id}/beer/${beer._id}`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
